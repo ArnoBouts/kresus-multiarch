@@ -1,21 +1,26 @@
 pipeline:
+
   amd64:
     image: plugins/docker
     registry: no-cloud.fr
     repo: no-cloud.fr/kresus-amd64
     tag: latest
     dockerfile: Dockerfile-nightly.amd64
+
   arm32v7:
     image: plugins/docker
     registry: no-cloud.fr
     repo: no-cloud.fr/kresus-arm
     tag: latest
     dockerfile: Dockerfile-nightly.arm
-  test:
+
+  multiarch:
     image: docker:dind
+    environment:
+      - DOCKER_CLI_EXPERIMENTAL=enabled
     commands:
-      - docker --config . manifest create no-cloud.fr/kresus-multiarch no-cloud.fr/kresus-arm no-cloud.fr/kresus-amd64
-      - docker --config . manifest annotate no-cloud.fr/kresus-multiarch no-cloud.fr/kresus-amd64 --arch amd64
-      - docker --config . manifest annotate no-cloud.fr/kresus-multiarch no-cloud.fr/kresus-arm --arch arm
-      - docker --config . manifest push no-cloud.fr/kresus-multiarch
+      - docker manifest create no-cloud.fr/kresus-multiarch no-cloud.fr/kresus-arm no-cloud.fr/kresus-amd64
+      - docker manifest annotate no-cloud.fr/kresus-multiarch no-cloud.fr/kresus-amd64 --arch amd64
+      - docker manifest annotate no-cloud.fr/kresus-multiarch no-cloud.fr/kresus-arm --arch arm
+      - docker manifest push no-cloud.fr/kresus-multiarch
 

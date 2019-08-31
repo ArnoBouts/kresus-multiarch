@@ -24,3 +24,8 @@ pipeline:
       - docker manifest annotate no-cloud.fr/kresus-multiarch no-cloud.fr/kresus-arm --arch arm
       - docker manifest push no-cloud.fr/kresus-multiarch
 
+  notify:
+    image: no-cloud.fr/drone-xmpp
+    secrets: [ xmpp_host, xmpp_jid, xmpp_password, xmpp_to ]
+    when:
+      status: [ success, failure ]
